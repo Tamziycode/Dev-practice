@@ -27,9 +27,6 @@ The UI is updated dynamically through a rendering engine that clears and re-popu
 - **Persistent Storage:** LocalStorage integration for long-term data retention.
 - **Responsive Design:** Utilizes CSS Flexbox and custom properties for a modern, mobile-first interface.
 
-## Installation and Usage
+  ```
 
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/username/expense-tracker.git](https://github.com/username/expense-tracker.git)
-   ```
+  ```
