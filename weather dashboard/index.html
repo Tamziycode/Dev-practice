@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <main class="dashboard-container">
+        
+        <form id="search-form" role="search">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="search" id="search-input" placeholder="Search city... or Enter location" autocomplete="off">
+        </form>
+
+        <section class="weather-hero">
+            <h1 id="city-name">San Francisco</h1>
+            
+            <div class="hero-content">
+                <span id="temp">18&deg;C</span>
+                <div class="condition-wrapper">
+                    <span id="condition-text">Partly<br>Cloudy</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <div class="card stat-card">
+                <i class="fa-solid fa-droplet icon"></i>
+                <div>
+                    <p class="label">Humidity</p>
+                    <p class="value" id="humidity">65%</p>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <i class="fa-solid fa-wind icon"></i>
+                <div>
+                    <p class="label">Wind</p>
+                    <p class="value" id="wind-speed">15 km/h</p>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <i class="fa-solid fa-gauge-high icon"></i>
+                <div>
+                    <p class="label">Pressure</p>
+                    <p class="value" id="pressure">1013 hPa</p>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <i class="fa-solid fa-temperature-half icon"></i>
+                <div>
+                    <p class="label">Feels Like</p>
+                    <p class="value" id="feels-like">17&deg;C</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="forecast-grid" id="forecast-container">
+            
+        </section>
+
+    </main>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
