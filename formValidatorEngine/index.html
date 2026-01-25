@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Validation Engine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="form-card">
+        <h2>Advanced Registration</h2>
+        <form id="advancedForm" novalidate>
+            <div class="field-group">
+                <label>Full Name</label>
+                <input type="text" name="fullname" data-rules="required|noNumbers" placeholder="Full Name">
+                <span class="error-msg"></span>
+            </div>
+    
+            <div class="field-group">
+                <label>Username</label>
+                <input type="text" name="username" data-rules="required|min:3|isUnique" placeholder="Username">
+                <div class="async-status"></div>
+                <span class="error-msg"></span>
+            </div>
+    
+            <div class="field-group">
+                <label>Account Type</label>
+                <select title="account" name="accountType" id="accountType">
+                    <option value="personal">Personal</option>
+                    <option value="business">Business</option>
+                </select>
+            </div>
+    
+            <div class="field-group hidden" id="companyGroup" data-depends-on="accountType:business">
+                <label>Company Name</label>
+                <input type="text" name="companyName" data-rules="required" placeholder="Tamziy inc">
+                <span class="error-msg"></span>
+            </div>
+    
+            <div class="field-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <input type="password" name="password" id="password" data-rules="required|isStrong" placeholder="Enter password">
+                    <button type="button" class="toggle-btn">Show</button>
+                </div>
+                <div class="strength-meter"><div class="bar"></div></div>
+                <span class="error-msg"></span>
+            </div>
+    
+            <div class="field-group">
+                <label>Confirm Password</label>
+                <input type="password" name="confirm" data-rules="required|matches:password" placeholder="Confirm password">
+                <span class="error-msg"></span>
+            </div>
+    
+            <button type="submit" class="submit-btn">Complete Registration</button>
+        </form>
+    </div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+
