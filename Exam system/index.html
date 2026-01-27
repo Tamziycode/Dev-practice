@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Exam System</title>
+</head>
+<body>
+    <header>
+        <h2>Welcome to the Exam</h2>
+
+        <div class="timer-container">
+            <i class="fa-regular fa-clock"></i>
+            <span id="timer">58:30</span>
+        </div>
+    </header>
+
+    <main id="exam-screen">
+
+        <div id=" question-container">
+                <div class="question-card">
+                    <p id="question-deets">Question 1 of 30</p>
+                    <p class="question-text">1. What is the capital of France?</p>
+                    <div class="options-grid">
+                        <label class="option-card">
+                            <input type="radio" name="q1" value="A">
+                            <span class="option-content">
+                                <span class="option-letter">A</span>
+                                <span class="option-text">Learning through associations between stimuli.</span>
+                            </span>
+                        </label>
+    
+                        <label class="option-card">
+                            <input type="radio" name="q1" value="B">
+                            <span class="option-content">
+                                <span class="option-letter">B</span>
+                                <span class="option-text">Learning through rewards and punishments for behavior.</span>
+                            </span>
+                        </label>
+    
+                        <label class="option-card">
+                            <input type="radio" name="q1" value="C">
+                            <span class="option-content">
+                                <span class="option-letter">C</span>
+                                <span class="option-text">Learning through observation of others.</span>
+                            </span>
+                        </label>
+                        
+                        <label class="option-card">
+                            <input type="radio" name="q1" value="D">
+                            <span class="option-content">
+                                <span class="option-letter">D</span>
+                                <span class="option-text">Innate behavior determined by genetics.</span>
+                            </span>
+                        </label>    
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-secondary">Previous</button>
+                    <button class="btn btn-primary">Next Question</button>
+                    <button  class="btn btn-danger" style="display:none;">Submit Exam</button>
+                </div>
+
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-track">
+
+                <div class="progress-fill" style="width: 15%;"></div>
+            </div>
+            <div class="question-indicators">
+                <span class="dot active">1</span>
+                <span class="dot">2</span>
+                <span class="dot">3</span>
+                <span class="dot">4</span>
+                <span class="dot">5</span>
+            </div>
+        </div>
+
+    </main>
+
+
+        <main id="result-screen" class="hidden">
+            <div class="result-card">
+                <div class="result-header">
+                    <h3>EXAMINATION RESULTS SUMMARY</h3>
+                </div>
+        
+                <div class="result-body">
+                    <p class="final-score">FINAL SCORE: 27/30</p>
+        
+                    <div class="circular-chart" style="--deg: 324deg;">
+                        <div class="inner-circle">
+                            <span class="score-percentage">90%</span>
+                        </div>
+                    </div>
+        
+                    <div class="grade-container">
+                        <span class="grade-letter">A</span>
+                        <p class="status-label">Status: <span class="status-pass">PASSED</span></p>
+                    </div>
+        
+                    <p class="result-message">
+                        Congratulations! You have successfully completed the examination.
+                    </p>
+        
+                    <button class="btn btn-primary" style="width: 100%;">Review Answers</button>
+                </div>
+            </div>
+        </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

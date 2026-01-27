@@ -1,0 +1,359 @@
+/* Base Reset & Fonts */
+:root {
+    /* --- Dark Mode Color Palette --- */
+    --primary: #6366F1;          /* Lighter Indigo for better visibility on dark */
+    --primary-dim: rgba(99, 102, 241, 0.15); /* Low opacity primary for backgrounds */
+    
+    --bg-body: #0F172A;          /* Very dark blue/slate (Page Background) */
+    --bg-surface: #1E293B;       /* Slightly lighter dark (Card Background) */
+    
+    --text-main: #F8FAFC;        /* Almost white text */
+    --text-muted: #94A3B8;       /* Light gray text */
+    
+    --border-color: #334155;     /* Dark gray borders */
+    --hover-bg: #2D3A4F;         /* Hover state color */
+    
+    --border-radius: 12px;
+
+    --success: #10B981;  
+    --danger: #EF4444;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { 
+    font-family: 'Inter', system-ui, sans-serif; 
+    background-color: var(--bg-body); 
+    color: var(--text-main); 
+    height: 100vh; 
+    display: flex; 
+    flex-direction: column; 
+}
+
+/* 1. Top Bar */
+.top-bar {
+    background: var(--bg-surface);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color); /* Border replaces shadow in dark mode */
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 70px;
+}
+
+/* Note: Your HTML uses <header> without class "top-bar", 
+   so we target the header tag directly or you should add class="top-bar" to HTML */
+header {
+    background: var(--bg-surface);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    height: 70px;
+}
+
+header h2 { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
+
+.timer-container { 
+    font-family: monospace; 
+    font-size: 1.25rem; 
+    font-weight: 700; 
+    color: var(--primary); 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    background: var(--primary-dim); 
+    padding: 8px 16px; 
+    border-radius: 8px; 
+}
+
+/* 2. Main Content Area */
+#exam-screen {
+    margin-top: 70px; 
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    gap: 2rem; /* Adds space between question card and progress bar */
+}
+
+/* Wrapper for the question card to handle width */
+#question-container {
+    width: 100%;
+}
+
+/* 3. Progress Bar (Updated for dark mode) */
+/* In style.css, find or add this section */
+
+.progress-container { 
+    width: 100%; 
+    margin-top: 3rem; /* Adds the space you need (48px) */
+    padding-top: 1rem; /* Optional: Adds a little internal breathing room */
+    border-top: 1px solid var(--border-color); /* Optional: Adds a nice divider line */
+}
+
+.progress-track { background: var(--border-color); height: 8px; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
+.progress-fill { background: var(--primary); height: 100%; transition: width 0.3s ease; }
+
+.question-indicators { display: flex; gap: 8px; justify-content: flex-start; }
+.dot { 
+    width: 30px; height: 30px; 
+    display: flex; align-items: center; justify-content: center; 
+    border-radius: 50%; 
+    background: var(--border-color); 
+    color: var(--text-muted); 
+    font-size: 0.8rem; font-weight: 600; 
+}
+.dot.active { background: var(--primary); color: #fff; }
+
+/* 4. Question Card */
+.question-card {
+    background: var(--bg-surface);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    /* In dark mode, borders are often better than shadows for separation */
+    border: 1px solid var(--border-color);
+    width: 100%;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#question-deets { 
+    color: var(--text-muted); 
+    font-size: 0.9rem; 
+    font-weight: 500; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    margin-bottom: 1rem;
+}
+
+.question-text { font-size: 1.5rem; margin: 0 0 2rem; line-height: 1.4; color: var(--text-main); }
+
+/* 5. Options */
+.options-grid { display: grid; gap: 12px; }
+
+.option-card {
+    display: block;
+    cursor: pointer;
+    border: 2px solid var(--border-color);
+    background: transparent;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+/* Hover state: slightly lighter background */
+.option-card:hover { 
+    border-color: var(--primary); 
+    background: var(--hover-bg); 
+}
+
+.option-card input[type="radio"] { position: absolute; opacity: 0; }
+
+/* Active State */
+.option-card input[type="radio"]:checked + .option-content {
+    color: var(--primary);
+}
+
+.option-card:has(input:checked) {
+    border-color: var(--primary);
+    background-color: var(--primary-dim);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+.option-content { display: flex; align-items: center; gap: 12px; }
+
+.option-letter {
+    background: var(--border-color); /* Dark grey box for the letter */
+    color: var(--text-main);
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+/* Change letter style when selected */
+.option-card input:checked + .option-content .option-letter {
+    background: var(--primary);
+    color: #fff;
+}
+
+.option-text {
+    color: var(--text-main);
+}
+
+/* 6. Navigation Controls */
+.controls {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: 0.2s;
+}
+
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { filter: brightness(1.1); }
+
+.btn-secondary { 
+    background: var(--border-color); 
+    color: var(--text-main); 
+}
+.btn-secondary:hover { background: var(--hover-bg); }
+.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-danger { background: #EF4444; color: white; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .question-text { font-size: 1.25rem; }
+    .question-card { padding: 1.5rem; }
+    .controls { flex-direction: column-reverse; gap: 10px; }
+    .btn { width: 100%; }
+}
+
+
+/* --- Result Screen Styling --- */
+
+/* Center the result screen vertically and horizontally */
+#result-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 70px); /* Full height minus header */
+}
+
+/* Hide helper class (for JS toggling) */
+.hidden { display: none !important; }
+
+.result-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    overflow: hidden; /* Keeps the header inside the corners */
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.result-header {
+    background: var(--bg-surface);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.result-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    color: var(--text-main);
+    text-transform: uppercase;
+}
+
+.result-body {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.final-score {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* --- The Magic Donut Chart --- */
+.circular-chart {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    /* This creates the progress ring using variables */
+    background: conic-gradient(
+        var(--success) 0deg var(--deg), 
+        var(--border-color) var(--deg) 360deg
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem 0;
+}
+
+.inner-circle {
+    width: 120px;
+    height: 120px;
+    background: var(--bg-surface);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-percentage {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--success);
+}
+
+/* --- Grade & Status --- */
+.grade-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.grade-letter {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--success);
+    line-height: 1;
+}
+
+.status-label {
+    font-size: 1rem;
+    color: var(--text-muted);
+}
+
+.status-pass {
+    color: var(--success);
+    font-weight: 700;
+}
+
+.result-message {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
