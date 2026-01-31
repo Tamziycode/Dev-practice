@@ -14,13 +14,13 @@
 
         <div class="timer-container">
             <i class="fa-regular fa-clock"></i>
-            <span id="timer">58:30</span>
+            <span id="timer">1:00:00</span>
         </div>
     </header>
 
     <main id="exam-screen">
 
-        <div id=" question-container">
+        <div id="question-container">
                 <div class="question-card">
                     <p id="question-deets">Question 1 of 30</p>
                     <p class="question-text">1. What is the capital of France?</p>
@@ -59,9 +59,9 @@
                 </div>
 
                 <div class="controls">
-                    <button class="btn btn-secondary">Previous</button>
-                    <button class="btn btn-primary">Next Question</button>
-                    <button  class="btn btn-danger" style="display:none;">Submit Exam</button>
+                    <button id="prev" class="btn btn-secondary">Previous</button>
+                    <button id="next" class="btn btn-primary">Next Question</button>
+                    <button id="submit" class="btn btn-danger" style="display:none;">Submit Exam</button>
                 </div>
 
         </div>
@@ -112,6 +112,7 @@
             </div>
         </main>
 
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
