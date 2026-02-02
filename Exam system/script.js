@@ -3,6 +3,8 @@ let timer = document.querySelector("#timer");
 let question = document.querySelector(".question-text");
 let details = document.querySelector("#question-deets");
 let options = document.querySelector(".options-grid");
+let nav = document.querySelector(".question-indicators");
+let progressBar = document.querySelector(".progress-track");
 
 //Hardcoded values
 let noOfQuestions = 50;
@@ -73,17 +75,19 @@ Fisher-Yates shuffle for the questions given
 */
 
 previous.addEventListener("click", () => {
+  saveAnswer();
   if (currentQuestionIndex > 0) {
     currentQuestionIndex--;
+    localStorage.setItem("currentIndex", currentQuestionIndex);
     renderQuestions(currentQuestionIndex, userQuestions);
-    console.log(currentQuestionIndex);
   }
 });
 
 next.addEventListener("click", () => {
+  saveAnswer();
   if (currentQuestionIndex < noOfQuestions - 1) {
     currentQuestionIndex++;
-    console.log(currentQuestionIndex);
+    localStorage.setItem("currentIndex", currentQuestionIndex);
     renderQuestions(currentQuestionIndex, userQuestions);
   }
 });
@@ -123,8 +127,9 @@ function renderQuestions(index, array) {
   let optionsHtml = "";
   currentQuestion.options.forEach((opt, i) => {
     let letter = String.fromCharCode(65 + i);
+    let isChecked = userAnswers[index] === opt ? "checked" : "";
     optionsHtml += `<label class="option-card">
-                            <input type="radio" name="q${index}" value="${letter}">
+                            <input type="radio" name="q${index}" value="${opt}"${isChecked}>
                             <span class="option-content">
                                 <span class="option-letter">${letter} </span>
                                 <span class="option-text">${opt}</span>
@@ -133,6 +138,8 @@ function renderQuestions(index, array) {
   });
 
   options.innerHTML = optionsHtml;
+  updateDots();
+  progress();
 }
 
 function getEndTime() {
@@ -171,16 +178,102 @@ function saveAnswer() {
   });
 }
 
-function submitExam() {}
+function saveAnswer() {
+  // 1. Find the selected radio button
+  let selectedOption = document.querySelector(
+    'input[name="q' + currentQuestionIndex + '"]:checked'
+  );
 
-function progress() {}
+  // 2. Only save if they actually picked something
+  if (selectedOption) {
+    let answerValue = selectedOption.value;
+
+    // 3. Save to the specific Index (Prevents duplicates!)
+    userAnswers[currentQuestionIndex] = answerValue;
+
+    // 4. INSTANTLY save to browser storage
+    localStorage.setItem("userAnswers", JSON.stringify(userAnswers));
+  }
+}
+
+function navigation() {
+  nav.innerHTML = "";
+  for (let i = 0; i < noOfQuestions; i++) {
+    let dot = document.createElement("span"); // this basically creates a variable dot that is the same as a span element that you can mutate in js. This makes it easier to work with as opposed to selecting it using a query selector. It can also be injected directly into the dom. Im seeing react patterns here
+    dot.classList.add("dot"); //classList is a way to call class basically saying class then do something. Add gives the span "dot" a class of dot in this case
+    dot.innerText = `${i + 1}`;
+
+    dot.addEventListener("click", () => {
+      saveAnswer();
+      currentQuestionIndex = i;
+      localStorage.setItem("currentIndex", currentQuestionIndex);
+      renderQuestions(currentQuestionIndex, userQuestions);
+      updateDots();
+    });
+    nav.appendChild(dot);
+  }
+}
+
+function updateDots() {
+  let dotClass = document.querySelectorAll(".dot");
+
+  dotClass.forEach((dotClass, index) => {
+    dotClass.className = "dot";
+
+    if (index == currentQuestionIndex) {
+      dotClass.classList.add("active");
+    }
+
+    if (userAnswers[index]) {
+      dotClass.classList.add("completed");
+    }
+  });
+}
+function submitExam() {
+  //End the exam and render the result
+}
+
+function progress() {
+  width = ((currentQuestionIndex + 1) / noOfQuestions) * 100;
+  progressBar.innerHTML = `<div class="progress-fill" style="width: ${width}%;"></div>`;
+}
 function initializeExam() {
-  getEndTime();
-  shuffleQuestions(qArray);
-  collectQuestions(qArray);
-  userQuestions = JSON.parse(localStorage.getItem("storedQuestions"));
+  let storedSession = localStorage.getItem("storedQuestions");
+  let storedExpiry = localStorage.getItem("expiryTime");
+  let storedAnswers = localStorage.getItem("userAnswers");
+  let storedIndex = localStorage.getItem("currentIndex"); // NEW
+
+  if (storedSession && storedExpiry) {
+    // --- RESUME MODE ---
+    console.log("Resuming saved exam...");
+    userQuestions = JSON.parse(storedSession);
+
+    if (storedAnswers) userAnswers = JSON.parse(storedAnswers);
+    else userAnswers = new Array(noOfQuestions).fill(null);
+
+    // Resume from saved index, or default to 0
+    if (storedIndex) currentQuestionIndex = parseInt(storedIndex);
+  } else {
+    // --- NEW EXAM MODE ---
+    console.log("Starting fresh exam...");
+    shuffleQuestions(qArray);
+
+    // Fix: Clear storedQuestions before collecting new ones
+    storedQuestions = [];
+    collectQuestions(qArray);
+
+    // Fix: Fill userQuestions immediately!
+    userQuestions = [...storedQuestions];
+
+    getEndTime(); // Fix: function call was missing ()
+
+    userAnswers = new Array(noOfQuestions).fill(null);
+    currentQuestionIndex = 0; // Reset index for new exam
+  }
+
   renderQuestions(currentQuestionIndex, userQuestions);
 }
 
 initializeExam();
 time();
+navigation();

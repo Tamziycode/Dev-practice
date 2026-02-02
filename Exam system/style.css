@@ -136,8 +136,10 @@ header h2 {
 
 .question-indicators {
   display: flex;
+  width: 100%;
   gap: 8px;
   justify-content: flex-start;
+  flex-wrap: wrap;
 }
 .dot {
   width: 30px;
@@ -150,10 +152,15 @@ header h2 {
   color: var(--text-muted);
   font-size: 0.8rem;
   font-weight: 600;
+  flex: 0 0 3%;
 }
 .dot.active {
   background: var(--primary);
-  color: #fff;
+  color: whitesmoke;
+}
+.dot.completed {
+  background: var(--primary);
+  color: #10b981;
 }
 
 /* 4. Question Card */
