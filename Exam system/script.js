@@ -5,11 +5,15 @@ let details = document.querySelector("#question-deets");
 let options = document.querySelector(".options-grid");
 let nav = document.querySelector(".question-indicators");
 let progressBar = document.querySelector(".progress-track");
+let modal = document.getElementById("confirm-modal");
+let confirmBtn = document.getElementById("confirm-submit");
+let cancelBtn = document.getElementById("cancel-submit");
 
 //Hardcoded values
 let noOfQuestions = 50;
-let examDuration = 60 * 60 * 1000; //1 hour in milliseconds
+let examDuration = 30 * 60 * 1000; //1 hour in milliseconds
 let currentQuestionIndex = 0;
+let timeRemaining = 0;
 
 let qArray = questions; //questions is an array of question objects defined in data.js
 let storedQuestions = [];
@@ -93,6 +97,17 @@ next.addEventListener("click", () => {
 });
 
 submit.addEventListener("click", () => {
+  saveAnswer();
+  modal.classList.remove("hidden");
+});
+
+cancelBtn.addEventListener("click", () => {
+  modal.classList.add("hidden"); // Hide the pop-up
+});
+
+confirmBtn.addEventListener("click", () => {
+  saveAnswer();
+  modal.classList.add("hidden"); // Hide modal
   submitExam();
 });
 
@@ -148,7 +163,7 @@ function getEndTime() {
 }
 
 function time() {
-  let timeRemaining = setInterval(() => {
+  timeRemaining = setInterval(() => {
     let storedExpiryTime = localStorage.getItem("expiryTime");
     let distance = storedExpiryTime - Date.now();
 
@@ -230,7 +245,92 @@ function updateDots() {
   });
 }
 function submitExam() {
+  clearInterval(timeRemaining);
+
+  const storedAnswers = localStorage.getItem("userAnswers");
+  if (storedAnswers) {
+    userAnswers = JSON.parse(storedAnswers);
+  }
+  let score = 0;
+  userQuestions.forEach((q, i) => {
+    if (q.answer === userAnswers[i]) {
+      score++;
+    }
+  });
+
+  let percentage = (score / noOfQuestions) * 100;
+  let grade = "";
+  let status = "";
+  let color = "";
+
+  switch (true) {
+    case percentage >= 85:
+      grade = "A";
+      status = "Passed";
+      color = "#388E3C";
+      break;
+    case percentage >= 70:
+      grade = "B";
+      status = "Passed";
+      color = "#64B5F6";
+      break;
+    case percentage >= 60:
+      grade = "C";
+      status = "Passed";
+      color = "#FFB300";
+      break;
+    case percentage >= 50:
+      grade = "D";
+      status = "Passed";
+      color = "#FB8C00";
+      break;
+    case percentage >= 40:
+      grade = "E";
+      status = "Failed";
+      color = "#E65100";
+    default:
+      grade = "F";
+      status = "Failed";
+      color = "#D32F2F";
+      break;
+  }
+
+  document.getElementById("exam-screen").classList.add("hidden");
+
+  let resultScreen = document.getElementById("result-screen");
+  resultScreen.classList.remove("hidden");
+
+  document.querySelector(
+    ".final-score"
+  ).innerText = `FINAL SCORE: ${score}/${noOfQuestions}`;
+  document.querySelector(".score-percentage").innerText = `${percentage}%`;
+
+  let gradeLetterEl = document.querySelector(".grade-letter");
+  let statusPassEl = document.querySelector(".status-pass");
+
+  gradeLetterEl.innerText = grade;
+  gradeLetterEl.style.color = color;
+
+  statusPassEl.innerText = status;
+  statusPassEl.style.color = color;
+
+  let degrees = (percentage / 100) * 360;
+  document
+    .querySelector(".circular-chart")
+    .style.setProperty("--deg", `${degrees}deg`);
+
+  localStorage.removeItem("storedQuestions");
+  localStorage.removeItem("userAnswers");
+  localStorage.removeItem("expiryTime");
+  localStorage.removeItem("currentIndex");
+
   //End the exam and render the result
+  /*Stop the timer 
+  compare the users answers to the actual answer and increment a counter for every correct answer
+  take the counters value, divide it by the total no of questions and multiply by 100 to get the percentage
+  use booleans, switch(Done) or if statements to get users grade
+  update the dom to show users grade and how many answers they got right
+  */
 }
 
 function progress() {
@@ -244,7 +344,7 @@ function initializeExam() {
   let storedIndex = localStorage.getItem("currentIndex"); // NEW
 
   if (storedSession && storedExpiry) {
-    // --- RESUME MODE ---
+    // RESUME EXAM
     console.log("Resuming saved exam...");
     userQuestions = JSON.parse(storedSession);
 
@@ -254,18 +354,18 @@ function initializeExam() {
     // Resume from saved index, or default to 0
     if (storedIndex) currentQuestionIndex = parseInt(storedIndex);
   } else {
-    // --- NEW EXAM MODE ---
+    // NEW EXAM
     console.log("Starting fresh exam...");
     shuffleQuestions(qArray);
 
-    // Fix: Clear storedQuestions before collecting new ones
+    // Clear storedQuestions before collecting new ones
     storedQuestions = [];
     collectQuestions(qArray);
 
-    // Fix: Fill userQuestions immediately!
+    // Fill userQuestions immediately!
     userQuestions = [...storedQuestions];
 
-    getEndTime(); // Fix: function call was missing ()
+    getEndTime();
 
     userAnswers = new Array(noOfQuestions).fill(null);
     currentQuestionIndex = 0; // Reset index for new exam
