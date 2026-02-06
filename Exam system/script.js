@@ -60,8 +60,7 @@ Logic: Listen for the visibilitychange event on the document object.
 
 Action: If document.hidden becomes true, you can pause the exam and show a warning, or automatically deduct 30 seconds from their timer as a penalty.
 
-B. The "Refresh Shield" (Persistence)
-As we discussed, using an Absolute Expiry Timestamp is the ultimate way to prevent users from refreshing the page to "reset" the clock.
+B. 
 
 Logic: Save the expiryTime (Start Time + 10 Minutes) to localStorage.
 
@@ -77,6 +76,65 @@ Action: Use e.preventDefault() to stop the action.
 
 Fisher-Yates shuffle for the questions given
 */
+
+function enableAntiCheat() {
+  // BLOCK RIGHT CLICK
+  document.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+  });
+
+  // BLOCK COPY / PASTE / SELECT
+  const events = ["copy", "paste", "cut", "selectstart"];
+  events.forEach((evt) => {
+    document.addEventListener(evt, (e) => {
+      e.preventDefault();
+    });
+  });
+
+  // BLOCK CHEATING KEYS (F12, Ctrl+C, Alt+Tab detection)
+  document.addEventListener("keydown", (e) => {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && (e.key === "p" || e.key === "c" || e.key === "v")) ||
+      (e.metaKey && (e.key === "p" || e.key === "c" || e.key === "v"))
+    ) {
+      e.preventDefault();
+    }
+  });
+
+  // Auto Submit on TAB SWITCH
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      submitExam(); // Auto-submit if they leave the tab
+    }
+  });
+
+  // 5. ENFORCE FULLSCREEN ON FIRST CLICK
+
+  document.addEventListener("click", function startFullscreen() {
+    const el = document.documentElement;
+    if (el.requestFullscreen) {
+      el.requestFullscreen().catch((err) => {
+        console.log("Fullscreen blocked or already active");
+      });
+    }
+    // Remove this listener so it doesn't try to fullscreen on every single click forever
+    document.removeEventListener("click", startFullscreen);
+  });
+  document.addEventListener("fullscreenchange", () => {
+    // Check if fullscreen is gone AND the exam screen is still visible
+    const isExamActive = !document
+      .getElementById("exam-screen")
+      .classList.contains("hidden");
+
+    if (!document.fullscreenElement && isExamActive) {
+      alert(
+        "❌ VIOLATION: You exited fullscreen mode.\n\nYour exam will now be submitted."
+      );
+      submitExam();
+    }
+  });
+}
 
 previous.addEventListener("click", () => {
   saveAnswer();
@@ -370,10 +428,12 @@ function initializeExam() {
     userAnswers = new Array(noOfQuestions).fill(null);
     currentQuestionIndex = 0; // Reset index for new exam
   }
-
+  navigation();
   renderQuestions(currentQuestionIndex, userQuestions);
+  enableAntiCheat();
 }
 
+alert("WARNING: Do not leave the exam tab! And do not exit fullscreen.");
 initializeExam();
 time();
 navigation();
