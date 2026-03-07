@@ -1,0 +1,9 @@
+# Ignore Dependencies (This saves you from uploading 10,000 files)
+node_modules/
+
+# Ignore Secrets (This protects your passwords)
+.env
+
+# Ignore system files
+.DS_Store
+npm-debug.log*
